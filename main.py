@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-import uvicorn
+from db import init_db
 
 
 def get_app():
@@ -12,3 +12,13 @@ def get_app():
 
 
 app = get_app()
+
+
+@app.get("/")
+async def test():
+    return "someting"
+
+
+@app.on_event("startup")
+async def startup_event():
+    init_db(app)
