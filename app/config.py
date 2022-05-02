@@ -4,7 +4,7 @@ from sqlalchemy.engine.url import URL
 
 class Settings(BaseSettings):
 
-    DB_DRIVER: str = "postgresql"
+    DB_DRIVER: str = "postgres"
     DB_HOST: str = "db"
     DB_PORT: int = 5432
     DB_USER: str = "postgres"
