@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 import aiohttp
+from pydantic import BaseModel
 
 from db import init_db
 from models import Trivia, TriviaSchema
@@ -17,8 +18,13 @@ def get_app():
 app = get_app()
 
 
-@app.get("/trivia/")
-async def get_trivia(count: int):
+class TriviaRequestBodySchema(BaseModel):
+    questions_num: int
+
+
+@app.post("/trivia/")
+async def get_trivia(questions_num: TriviaRequestBodySchema):
+    count = questions_num.questions_num
     trivia_url = f"https://jservice.io/api/random?count={count}"
     completed = 0
     timeout = aiohttp.ClientTimeout(total=5)
@@ -40,6 +46,7 @@ async def get_trivia(count: int):
                                 completed += 1
                         else:
                             break
+
     last_trivia = await Trivia.all().order_by("-id").first()
     if last_trivia:
         pre_last_trivia = Trivia.filter(id=last_trivia.id - 1)
